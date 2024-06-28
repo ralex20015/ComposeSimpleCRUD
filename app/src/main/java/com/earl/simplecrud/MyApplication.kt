@@ -1,12 +1,13 @@
 package com.earl.simplecrud
 
 import android.app.Application
+import com.earl.simplecrud.db.UserRepository
 
 class MyApplication : Application() {
-    private lateinit var database: AppDatabase
 
     override fun onCreate() {
         super.onCreate()
-        database = AppDatabase.getInstance(this)
+        UserRepository.initialize(this)
     }
+
 }

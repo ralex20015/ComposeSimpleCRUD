@@ -5,9 +5,13 @@ import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
+import com.earl.simplecrud.db.UserDao
+import com.earl.simplecrud.models.User
 
 @Database(
-    version = 2,
+    version = 4,
     entities = [User::class],
     autoMigrations = [
         AutoMigration (from = 1, to = 2)
@@ -16,13 +20,4 @@ import androidx.room.RoomDatabase
 
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
-
-    companion object {
-        private const val DB_NAME = "database-name"
-
-        fun getInstance(context: Context): AppDatabase {
-            return Room.databaseBuilder(context, AppDatabase::class.java, DB_NAME)
-                .build()
-        }
-    }
 }

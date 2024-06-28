@@ -1,9 +1,10 @@
-package com.earl.simplecrud
+package com.earl.simplecrud.db
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import com.earl.simplecrud.models.User
 import kotlinx.coroutines.flow.Flow
 
 @Dao
