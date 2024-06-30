@@ -14,7 +14,9 @@ import kotlinx.coroutines.withContext
 
 
 @Composable
-fun SignUpRoute(){
+fun SignUpRoute(
+
+){
     val signUpViewModel: SignUpViewModel = viewModel(factory = SignUpViewModelFactory())
 
     val scope = rememberCoroutineScope()

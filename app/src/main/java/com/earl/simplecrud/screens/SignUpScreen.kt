@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -47,8 +48,9 @@ fun SignUpScreen(
     //TODO: Implement navigation on the appbar
     Scaffold(modifier = Modifier.fillMaxSize(),
         topBar = {
-            TopAppBar(title = { Text(text = "Sign Up")})
-
+            CenterAlignedTopAppBar(title = {
+                Text(text = "SignUp")
+            })
         }, content = { innerPadding ->
 
             //TODO: See a way to change this because im almost writing the same code
