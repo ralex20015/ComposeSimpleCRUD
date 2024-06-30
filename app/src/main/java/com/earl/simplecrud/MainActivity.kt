@@ -51,7 +51,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             SimpleCRUDTheme {
-                SignUpRoute()
+                AppNavHost()
             }
         }
     }

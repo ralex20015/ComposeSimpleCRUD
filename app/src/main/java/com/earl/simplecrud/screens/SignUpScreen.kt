@@ -118,7 +118,6 @@ fun SignUpScreen(
                 ) {
                     Text(text = "Registrar")
                 }
-
             }
         })
 }
