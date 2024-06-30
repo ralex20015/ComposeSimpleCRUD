@@ -6,8 +6,12 @@ import com.earl.simplecrud.db.UserRepository
 
 class SignInViewModel(private val userRepository: UserRepository): ViewModel(){
 
-    fun login(email: String, password: String){
+    fun signIn(email: String, password: String) {
+        userRepository.signIn(email, password)
+    }
 
+    fun getCurrentUser(): UserRepository.Usuario {
+        return userRepository.user
     }
 
 }

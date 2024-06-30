@@ -6,13 +6,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,7 +31,8 @@ import com.earl.simplecrud.models.User
 @Composable
 fun SignUpScreen(
     modifier: Modifier = Modifier,
-    onRegister: (user: User) -> Unit
+    onRegister: (user: User) -> Unit,
+    onNavUp: () -> Unit
 ) {
     var name by remember { mutableStateOf("") }
     var lastName by remember {
@@ -50,7 +54,15 @@ fun SignUpScreen(
         topBar = {
             CenterAlignedTopAppBar(title = {
                 Text(text = "SignUp")
-            })
+            },
+                navigationIcon = {
+                    IconButton(onClick = onNavUp) {
+                        Icon(
+                            imageVector = Icons.Filled.ChevronLeft,
+                            contentDescription = "Anterior"
+                        )
+                    }
+                })
         }, content = { innerPadding ->
 
             //TODO: See a way to change this because im almost writing the same code
@@ -113,7 +125,7 @@ fun SignUpScreen(
                 Button(
                     modifier = modifier,
                     onClick = {
-                        onRegister(User(0, name, lastName,phoneNumber, email, password))
+                        onRegister(User(0, name, lastName, phoneNumber, email, password))
                     }
                 ) {
                     Text(text = "Registrar")
@@ -125,5 +137,5 @@ fun SignUpScreen(
 @Preview(showBackground = true)
 @Composable
 fun SignUpScreenPreview() {
-    SignUpScreen(modifier = Modifier.fillMaxWidth(), {} )
+    SignUpScreen(modifier = Modifier.fillMaxWidth(), {}, {})
 }

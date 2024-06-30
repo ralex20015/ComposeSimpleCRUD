@@ -15,7 +15,8 @@ import kotlinx.coroutines.withContext
 
 @Composable
 fun SignUpRoute(
-
+    onRegisterSubmitted: ()->Unit,
+    onNavUp: ()->Unit
 ){
     val signUpViewModel: SignUpViewModel = viewModel(factory = SignUpViewModelFactory())
 
@@ -41,7 +42,7 @@ fun SignUpRoute(
                 }
             }
         }
-    })
+    }, onNavUp = onNavUp)
 
     //Esto es un side effect
     if (showToast.value){

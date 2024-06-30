@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 fun SignInScreen(
     modifier: Modifier = Modifier,
     onSignUp: () -> Unit,
-    onSignIn: () -> Unit
+    onSignIn: (email: String, password: String) -> Unit
 ) {
     var email by rememberSaveable {
         mutableStateOf("")
@@ -39,7 +39,7 @@ fun SignInScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(title = {
-                Text(text = "SignInScreen")
+                Text(text = "Sign In")
             }
             )
         },
@@ -68,7 +68,9 @@ fun SignInScreen(
                     modifier = Modifier.clickable(onClick = onSignUp)
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-                Button(onClick = onSignIn, modifier = takeAll) {
+                Button(onClick = {
+                    onSignIn(email, password)
+                }, modifier = takeAll) {
                     Text(text = "Iniciar sesion")
                 }
             }
@@ -79,5 +81,5 @@ fun SignInScreen(
 @Preview
 @Composable
 fun SignInPreview() {
-    SignInScreen(Modifier.padding(16.dp), {}, {})
+    SignInScreen(Modifier.padding(16.dp), {}, {email, password ->  })
 }

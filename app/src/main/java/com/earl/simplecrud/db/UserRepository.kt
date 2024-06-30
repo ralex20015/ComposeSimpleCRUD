@@ -11,7 +11,19 @@ import java.lang.IllegalArgumentException
 
 private const val DB_NAME = "database-name"
 
+
 class UserRepository private constructor(context: Context) {
+
+    sealed class Usuario {
+
+        data class LoggedInUser(val email: String): Usuario()
+        object AdminUser: Usuario()
+        object NoUserLoggedIn : Usuario()
+    }
+
+    private var _user: Usuario = Usuario.NoUserLoggedIn
+    val user: Usuario
+        get() = _user
 
     private val MIGRATION_2_3 = object : Migration(2, 3) {
         override fun migrate(db: SupportSQLiteDatabase) {
@@ -29,6 +41,8 @@ class UserRepository private constructor(context: Context) {
         .addMigrations(MIGRATION_2_3, MIGRATION_3_4)
         .build()
 
+
+    //TODO Hacer con sharedPreferences la simulacion del inicio de sesion
 
     companion object {
         private var INSTANCE: UserRepository? = null
@@ -56,5 +70,12 @@ class UserRepository private constructor(context: Context) {
 
     suspend fun deleteUser(user: User) {
         userDao.delete(user)
+    }
+
+    fun signIn(email: String, password: String) {
+        when{
+            email == "admin" && password == "12345" -> _user = Usuario.AdminUser
+            else -> Usuario.NoUserLoggedIn
+        }
     }
 }
