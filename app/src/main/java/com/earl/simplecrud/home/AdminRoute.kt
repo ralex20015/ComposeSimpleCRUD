@@ -5,8 +5,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
-fun AdminRoute(){
+fun AdminRoute(
+    onLogoutSubmitted: () -> Unit
+){
     val adminViewModel: AdminViewModel = viewModel(factory = AdminViewModelFactory())
     val users = adminViewModel.getAllUsers().collectAsState(initial = emptyList())
-    AdminScreen(users = users.value)
+    AdminScreen(users = users.value, onLogout = onLogoutSubmitted)
 }

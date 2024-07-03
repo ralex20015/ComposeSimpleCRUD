@@ -67,7 +67,17 @@ fun AppNavHost(
         navigation(route = HOME, startDestination = ADMIN_HOME) {
             //TODO: Make the ViewModel for the admin and user
             composable(ADMIN_HOME) {
-                AdminRoute()
+                val context = LocalContext.current
+                AdminRoute(
+                  onLogoutSubmitted = {
+                      signInViewModel.logout(context)
+                      navController.navigate(AUTH){
+                          popUpTo(HOME) {
+                              inclusive = true
+                          }
+                      }
+                  }
+                )
             }
 
             composable(USER_HOME) {

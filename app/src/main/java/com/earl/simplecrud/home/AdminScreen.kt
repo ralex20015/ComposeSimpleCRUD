@@ -7,54 +7,175 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.automirrored.filled.Note
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.earl.simplecrud.models.User
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+
+@Composable
+fun AdminScreen(
+    users: List<User>,
+    onLogout: () -> Unit = {}
+) {
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
+    AdminNavigationDrawer(drawerState, onLogout) {
+        AdminContent(drawerState, scope, users)
+    }
+}
+
+@Composable
+fun AdminNavigationDrawer(
+    drawerState: DrawerState,
+    onLogout: () -> Unit,
+    drawerContent: @Composable () -> Unit
+) {
+    ModalNavigationDrawer(
+        drawerState = drawerState, drawerContent = {
+            AdminDrawerContent(onLogout)
+        }, content = { drawerContent() }
+    )
+}
+
+@Composable
+fun AdminDrawerContent(
+    onLogout: () -> Unit
+) {
+    ModalDrawerSheet {
+        //TODO: Make this like a photo 
+        Text("Drawer title", modifier = Modifier.padding(16.dp))
+        HorizontalDivider()
+        CustomNavigationDrawerItem(
+            label = "Home",
+            selected = false,
+            onClick = {},
+            iconImage = Icons.Filled.Home,
+            contentDescription = "Home"
+        )
+        CustomNavigationDrawerItem(
+            label = "My notes",
+            selected = false,
+            onClick = {},
+            iconImage = Icons.AutoMirrored.Filled.Note,
+            contentDescription = "Users"
+        )
+        CustomNavigationDrawerItem(
+            label = "Settings",
+            selected = false,
+            onClick = {},
+            iconImage = Icons.Filled.Settings,
+            contentDescription = "Settings"
+        )
+        HorizontalDivider()
+        CustomNavigationDrawerItem(
+            label = "Log out",
+            selected = false,
+            onClick = onLogout,
+            iconImage = Icons.AutoMirrored.Filled.Logout,
+            contentDescription = "Log out"
+        )
+    }
+}
+
+@Composable
+fun CustomNavigationDrawerItem(
+    label: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+    iconImage: ImageVector,
+    contentDescription: String
+) {
+    NavigationDrawerItem(
+        label = {
+            Row {
+                Icon(imageVector = iconImage, contentDescription = contentDescription)
+                Spacer(modifier = Modifier.width(16.dp))
+                Text(text = label)
+            }
+        },
+        selected,
+        onClick
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AdminScreen(users: List<User>) {
-
-    //TODO: Aqui voy a hacer la opcion de mostrar todos los usuarios y ademas de que el admin tambien pueda crear notes
+fun AdminContent(
+    drawerState: DrawerState,
+    scope: CoroutineScope = rememberCoroutineScope(),
+    users: List<User>,
+) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(title = {
                 Text(text = "Admin panel")
+            }, navigationIcon = {
+                IconButton(onClick = {
+                    scope.launch {
+                        drawerState.apply {
+                            if (isClosed) open() else close()
+                        }
+                    }
+                }) {
+                    Icon(imageVector = Icons.Filled.Menu, contentDescription = "Menu")
+                }
             })
         },
         content = { innerPadding ->
             Column(modifier = Modifier.padding(innerPadding)) {
-                LazyColumn {
-                    items(users) {
-                        ListItem(
-                            user = it, modifier = Modifier
-                                .fillMaxWidth()
-                                .height(70.dp)
-                        )
-                    }
-                }
+                UserList(users)
             }
         }
     )
-
 }
 
-//Se le pasan callbacks acuerdate de eso
 @Composable
-fun ListItem(user: User, modifier: Modifier) {
+fun UserList(users: List<User>) {
+    LazyColumn {
+        items(users) {
+            UserListItem(
+                user = it, modifier = Modifier
+                    .fillMaxWidth()
+                    .height(70.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun UserListItem(user: User, modifier: Modifier) {
     Card(modifier = modifier.padding(PaddingValues(bottom = 8.dp))) {
         Column(modifier = Modifier.padding(4.dp)) {
             Row {
@@ -80,6 +201,12 @@ fun ListItem(user: User, modifier: Modifier) {
 @Preview
 @Composable
 fun AdminScreenPreview() {
-    AdminScreen(users = emptyList())
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    AdminNavigationDrawer(drawerState, {}) {
+        AdminContent(
+            users = emptyList(),
+            drawerState = drawerState
+        )
+    }
 }
 
