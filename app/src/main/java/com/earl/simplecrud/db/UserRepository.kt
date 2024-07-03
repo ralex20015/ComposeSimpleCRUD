@@ -7,7 +7,9 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.earl.simplecrud.AppDatabase
 import com.earl.simplecrud.models.User
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 import java.lang.IllegalArgumentException
 
 private const val DB_NAME = "database-name"
@@ -56,10 +58,14 @@ class UserRepository private constructor(context: Context) {
     }
 
     suspend fun insertAll(user: User) {
-        userDao.insertAll(user)
+        withContext(Dispatchers.IO) {
+            userDao.insertAll(user)
+        }
     }
 
     suspend fun deleteUser(user: User) {
-        userDao.delete(user)
+        withContext(Dispatchers.IO) {
+            userDao.delete(user)
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.earl.simplecrud.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -9,7 +10,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class AdminViewModel(private val userRepository: UserRepository): ViewModel() {
-    //Maybe do a variable for listen when
 
     fun getAllUsers(): Flow<List<User>> {
         return userRepository.getAllUsers()
@@ -20,6 +20,7 @@ class AdminViewModel(private val userRepository: UserRepository): ViewModel() {
         viewModelScope.launch {
             userRepository.deleteUser(user)
         }
+        Log.d("AdminViewModel", "User deleted: $user")
     }
 }
 

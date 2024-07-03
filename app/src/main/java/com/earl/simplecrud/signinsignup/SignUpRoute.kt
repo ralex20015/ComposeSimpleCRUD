@@ -15,7 +15,7 @@ import kotlinx.coroutines.withContext
 
 @Composable
 fun SignUpRoute(
-    onRegisterSubmitted: ()->Unit,
+    onRegisterSubmitted: (isRegistered: Boolean)->Unit,
     onNavUp: ()->Unit
 ){
     val signUpViewModel: SignUpViewModel = viewModel(factory = SignUpViewModelFactory())
@@ -32,11 +32,13 @@ fun SignUpRoute(
                     signUpViewModel.registerUser(user)
                     withContext(Dispatchers.Main) {
                         toastMessage.value = "Usuario registrado exitosamente"
+                        onRegisterSubmitted(true)
                         showToast.value = true
                     }
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
                         toastMessage.value = "Error al registrar usuario: ${e.message ?: "Error desconocido"}"
+                        onRegisterSubmitted(false)
                         showToast.value = true
                     }
                 }

@@ -20,14 +20,10 @@ fun AdminRoute(
         users = users.value,
         onLogout = onLogoutSubmitted,
         onDeleteUser = { user: User ->
-            scope.launch {
-                withContext(Dispatchers.IO) {
-                    try {
-                        adminViewModel.deleteUser(user)
-                    }catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                }
+            try {
+                adminViewModel.deleteUser(user)
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
     )

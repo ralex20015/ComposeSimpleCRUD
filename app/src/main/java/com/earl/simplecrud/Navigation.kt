@@ -42,11 +42,14 @@ fun AppNavHost(
     NavHost(navController = navController,   startDestination = if (userLoggedIn.isLoggedIn) HOME else AUTH) {
         navigation(route= AUTH, startDestination = SIGN_IN_ROUTE){
             composable(SIGN_UP_ROUTE) {
-                SignUpRoute(onRegisterSubmitted = navController::navigateUp, navController::navigateUp)
+                SignUpRoute(onRegisterSubmitted = { isRegistered ->
+                    if(isRegistered) {
+                        navController.navigateUp()
+                    }
+                }, navController::navigateUp)
             }
 
             composable(SIGN_IN_ROUTE) {
-                //Creo que voy a tener volver a elevar el viewmodel para
                 SignInRoute(
                     signInViewModel = signInViewModel,
                     onSignUpSubmitted = {
