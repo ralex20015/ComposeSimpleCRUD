@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.compose)
     id("androidx.room")
+    kotlin("plugin.serialization") version "2.0.0"
 }
 
 android {
@@ -66,8 +67,9 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-   // implementation(libs.androidx.compose.material)
     implementation(libs.androidx.compose.material.iconsExtended)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.kotlinx.serialization.json)
     testImplementation(libs.junit)
 
     androidTestImplementation(libs.androidx.junit)

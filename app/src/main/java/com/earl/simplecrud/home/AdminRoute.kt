@@ -1,4 +1,4 @@
-package com.earl.simplecrud.screens
+package com.earl.simplecrud.home
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState

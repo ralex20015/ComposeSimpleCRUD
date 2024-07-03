@@ -1,4 +1,4 @@
-package com.earl.simplecrud.screens
+package com.earl.simplecrud.home
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues

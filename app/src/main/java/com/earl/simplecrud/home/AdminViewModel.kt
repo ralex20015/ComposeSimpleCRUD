@@ -1,4 +1,4 @@
-package com.earl.simplecrud.screens
+package com.earl.simplecrud.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

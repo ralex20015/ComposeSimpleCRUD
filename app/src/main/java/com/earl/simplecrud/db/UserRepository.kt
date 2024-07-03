@@ -1,12 +1,27 @@
 package com.earl.simplecrud.db
 
 import android.content.Context
+import androidx.compose.runtime.collectAsState
+import androidx.datastore.core.DataStore
+import androidx.datastore.core.Serializer
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.earl.simplecrud.AppDatabase
 import com.earl.simplecrud.models.User
+import com.earl.simplecrud.signinsignup.SessionState
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import java.io.InputStream
+import java.io.OutputStream
 import java.lang.IllegalArgumentException
 
 private const val DB_NAME = "database-name"
@@ -16,8 +31,8 @@ class UserRepository private constructor(context: Context) {
 
     sealed class Usuario {
 
-        data class LoggedInUser(val email: String): Usuario()
-        object AdminUser: Usuario()
+        data class LoggedInUser(val email: String) : Usuario()
+        object AdminUser : Usuario()
         object NoUserLoggedIn : Usuario()
     }
 
@@ -37,9 +52,10 @@ class UserRepository private constructor(context: Context) {
         }
     }
 
-    private val database: AppDatabase = Room.databaseBuilder(context, AppDatabase::class.java, DB_NAME)
-        .addMigrations(MIGRATION_2_3, MIGRATION_3_4)
-        .build()
+    private val database: AppDatabase =
+        Room.databaseBuilder(context, AppDatabase::class.java, DB_NAME)
+            .addMigrations(MIGRATION_2_3, MIGRATION_3_4)
+            .build()
 
 
     //TODO Hacer con sharedPreferences la simulacion del inicio de sesion
@@ -71,11 +87,22 @@ class UserRepository private constructor(context: Context) {
     suspend fun deleteUser(user: User) {
         userDao.delete(user)
     }
+    //This is for get if it is logged in
 
-    fun signIn(email: String, password: String) {
-        when{
-            email == "admin" && password == "12345" -> _user = Usuario.AdminUser
-            else -> Usuario.NoUserLoggedIn
-        }
-    }
+
+    //One Way to do the session
+//    private val IS_LOGGED_IN = booleanPreferencesKey("isLoggedIn")
+//    private val loggedInFlow: Flow<Boolean> = context.dataStore.data.map { preferences ->
+//        preferences[IS_LOGGED_IN] ?: false
+//    }
+//
+//    suspend fun setLoggedIn(context: Context) {
+//        context.dataStore.edit { settings ->
+//            settings[IS_LOGGED_IN] = true
+//        }
+//    }
+//
+//    suspend fun isLoggedIn(): Flow<Boolean>{
+//        return loggedInFlow
+//    }
 }

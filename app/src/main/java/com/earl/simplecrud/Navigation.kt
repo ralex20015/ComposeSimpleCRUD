@@ -1,22 +1,29 @@
 package com.earl.simplecrud
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.earl.simplecrud.Destinations.ADMIN_HOME
+import com.earl.simplecrud.Destinations.AUTH
 import com.earl.simplecrud.Destinations.HOME
 import com.earl.simplecrud.Destinations.SIGN_IN_ROUTE
 import com.earl.simplecrud.Destinations.SIGN_UP_ROUTE
 import com.earl.simplecrud.Destinations.USER_HOME
-import com.earl.simplecrud.db.UserRepository
-import com.earl.simplecrud.screens.AdminRoute
-import com.earl.simplecrud.screens.SignInRoute
-import com.earl.simplecrud.screens.SignUpRoute
+import com.earl.simplecrud.home.AdminRoute
+import com.earl.simplecrud.signinsignup.SignInRoute
+import com.earl.simplecrud.signinsignup.SignInViewModel
+import com.earl.simplecrud.signinsignup.SignInViewModelFactory
+import com.earl.simplecrud.signinsignup.SignUpRoute
+import com.earl.simplecrud.signinsignup.UserType
 
 object Destinations {
+    const val AUTH = "auth"
     const val SIGN_UP_ROUTE = "signUp"
     const val SIGN_IN_ROUTE = "signIn"
     const val HOME = "home"
@@ -29,26 +36,35 @@ object Destinations {
 fun AppNavHost(
     navController: NavHostController = rememberNavController()
 ) {
-    NavHost(navController = navController, startDestination = SIGN_IN_ROUTE) {
-        composable(SIGN_UP_ROUTE) {
-            SignUpRoute(onRegisterSubmitted = navController::navigateUp, navController::navigateUp)
-        }
-        //Creo que aqui me conviene mejor hacer un unico viewmodel
-        composable(SIGN_IN_ROUTE) {
-            SignInRoute(
-                onSignUpSubmitted = {
-                    navController.navigate(SIGN_UP_ROUTE)
-                },
-                onSignInSubmitted ={ currentUser ->
-                    if(currentUser == UserRepository.Usuario.AdminUser){
-                        navController.navigate(ADMIN_HOME)
+    val signInViewModel: SignInViewModel = viewModel(factory = SignInViewModelFactory(LocalContext.current.applicationContext as MyApplication))
+    val userLoggedIn = signInViewModel.sessionState.collectAsState().value
+
+    NavHost(navController = navController,   startDestination = if (userLoggedIn.isLoggedIn) HOME else AUTH) {
+        navigation(route= AUTH, startDestination = SIGN_IN_ROUTE){
+            composable(SIGN_UP_ROUTE) {
+                SignUpRoute(onRegisterSubmitted = navController::navigateUp, navController::navigateUp)
+            }
+
+            composable(SIGN_IN_ROUTE) {
+                //Creo que voy a tener volver a elevar el viewmodel para
+                SignInRoute(
+                    signInViewModel = signInViewModel,
+                    onSignUpSubmitted = {
+                        navController.navigate(SIGN_UP_ROUTE)
+                    },
+                    onSignInSubmitted ={ currentUser ->
+                        if(currentUser == UserType.ADMIN){
+                            navController.navigate(ADMIN_HOME)
+                        }
+                        if(currentUser == UserType.USER){
+                            navController.navigate(USER_HOME)
+                        }
                     }
-                }
-            )
+                )
+            }
         }
 
         navigation(route = HOME, startDestination = ADMIN_HOME) {
-
             //TODO: Make the ViewModel for the admin and user
             composable(ADMIN_HOME) {
                 AdminRoute()
