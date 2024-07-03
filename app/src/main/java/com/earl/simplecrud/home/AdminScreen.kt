@@ -13,10 +13,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.automirrored.filled.Note
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DrawerState
@@ -47,12 +47,13 @@ import kotlinx.coroutines.launch
 @Composable
 fun AdminScreen(
     users: List<User>,
-    onLogout: () -> Unit = {}
+    onLogout: () -> Unit = {},
+    onDeleteUser: (User) -> Unit = {}
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     AdminNavigationDrawer(drawerState, onLogout) {
-        AdminContent(drawerState, scope, users)
+        AdminContent(drawerState, scope, users, onDeleteUser)
     }
 }
 
@@ -136,6 +137,7 @@ fun AdminContent(
     drawerState: DrawerState,
     scope: CoroutineScope = rememberCoroutineScope(),
     users: List<User>,
+    onDeleteUser: (User) -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -155,27 +157,29 @@ fun AdminContent(
         },
         content = { innerPadding ->
             Column(modifier = Modifier.padding(innerPadding)) {
-                UserList(users)
+                UserList(users, onDeleteUser)
             }
         }
     )
 }
 
 @Composable
-fun UserList(users: List<User>) {
+fun UserList(users: List<User>, onDeleteUser: (User) -> Unit) {
     LazyColumn {
         items(users) {
             UserListItem(
                 user = it, modifier = Modifier
                     .fillMaxWidth()
                     .height(70.dp)
+                , onDeleteUser = onDeleteUser
+
             )
         }
     }
 }
 
 @Composable
-fun UserListItem(user: User, modifier: Modifier) {
+fun UserListItem(user: User, modifier: Modifier, onDeleteUser: (User) -> Unit) {
     Card(modifier = modifier.padding(PaddingValues(bottom = 8.dp))) {
         Column(modifier = Modifier.padding(4.dp)) {
             Row {
@@ -190,8 +194,8 @@ fun UserListItem(user: User, modifier: Modifier) {
                     Text(text = "${user.lastName}")
                 }
 
-                Button(onClick = { }, modifier = Modifier.weight(1f)) {
-                    Text(text = "Delete")
+                IconButton(onClick =  { onDeleteUser(user) } , modifier = Modifier.weight(1f)) {
+                    Icon(imageVector = Icons.Filled.Delete, contentDescription = "Delete user")
                 }
             }
         }
@@ -204,8 +208,11 @@ fun AdminScreenPreview() {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     AdminNavigationDrawer(drawerState, {}) {
         AdminContent(
-            users = emptyList(),
+            users = listOf(
+                User(0, "David", "Robles", "33333", "david@gmail.com", "12345")
+            ),
             drawerState = drawerState
+            , onDeleteUser = {}
         )
     }
 }

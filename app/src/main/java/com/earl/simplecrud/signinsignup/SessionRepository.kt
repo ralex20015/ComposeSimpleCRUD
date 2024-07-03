@@ -14,7 +14,7 @@ import kotlinx.serialization.json.Json
 import java.io.InputStream
 import java.io.OutputStream
 
-class SessionRepository {
+object SessionRepository {
     private val SESSION_STATE_KEY = stringPreferencesKey("session_state")
 
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "session")

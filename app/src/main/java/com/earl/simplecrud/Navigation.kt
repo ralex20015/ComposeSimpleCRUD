@@ -52,9 +52,13 @@ fun AppNavHost(
                     onSignUpSubmitted = {
                         navController.navigate(SIGN_UP_ROUTE)
                     },
-                    onSignInSubmitted ={ currentUser ->
+                    onSignInSubmitted = { currentUser ->
                         if(currentUser == UserType.ADMIN){
-                            navController.navigate(ADMIN_HOME)
+                            navController.navigate(HOME){
+                                popUpTo(AUTH) {
+                                    inclusive = true
+                                }
+                            }
                         }
                         if(currentUser == UserType.USER){
                             navController.navigate(USER_HOME)

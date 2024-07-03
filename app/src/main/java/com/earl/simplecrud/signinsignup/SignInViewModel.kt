@@ -2,6 +2,7 @@ package com.earl.simplecrud.signinsignup
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -17,7 +18,7 @@ class SignInViewModel(
     private val userRepository: UserRepository,
     application: MyApplication
 ) : AndroidViewModel(application) {
-    private val sessionRepository = SessionRepository()
+    private val sessionRepository = SessionRepository
 
     private val _sessionState = MutableStateFlow(SessionState())
     val sessionState: StateFlow<SessionState> = _sessionState.asStateFlow()
@@ -32,8 +33,9 @@ class SignInViewModel(
 
     fun login(email: String, password: String, context: Context) {
         viewModelScope.launch {
-            //a
+            Log.d("SignInViewModel", "Email: $email, Password: $password")
             if (email == "admin" && password == "12345") {
+                Log.d("SignInViewModel", "Login successful")
                 val newSessionState = SessionState(
                     isLoggedIn =
                     true, userType = UserType.ADMIN
@@ -43,6 +45,12 @@ class SignInViewModel(
                 _sessionState.value = newSessionState
             } else {
                 //handle if user exists on db
+
+                try {
+
+                }catch (e: Exception){
+
+                }
                 val newSessionState = SessionState(
                     isLoggedIn =
                     true, userType = UserType.USER

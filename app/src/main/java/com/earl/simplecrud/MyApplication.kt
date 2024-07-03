@@ -13,7 +13,7 @@ class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         UserRepository.initialize(this)
-        sessionRepository = SessionRepository()
+        sessionRepository = SessionRepository
     }
 
 }
