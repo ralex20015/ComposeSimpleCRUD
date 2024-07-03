@@ -34,14 +34,14 @@ fun SignUpScreen(
     onRegister: (user: User) -> Unit,
     onNavUp: () -> Unit
 ) {
-    var name by remember { mutableStateOf("") }
+    var name by rememberSaveable { mutableStateOf("") }
     var lastName by remember {
         mutableStateOf("")
     }
-    var email by remember {
+    var email by rememberSaveable {
         mutableStateOf("")
     }
-    var password by remember {
+    var password by rememberSaveable {
         mutableStateOf("")
     }
 

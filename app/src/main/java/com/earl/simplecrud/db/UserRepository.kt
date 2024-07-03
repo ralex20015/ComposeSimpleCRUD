@@ -29,17 +29,6 @@ private const val DB_NAME = "database-name"
 
 class UserRepository private constructor(context: Context) {
 
-    sealed class Usuario {
-
-        data class LoggedInUser(val email: String) : Usuario()
-        object AdminUser : Usuario()
-        object NoUserLoggedIn : Usuario()
-    }
-
-    private var _user: Usuario = Usuario.NoUserLoggedIn
-    val user: Usuario
-        get() = _user
-
     private val MIGRATION_2_3 = object : Migration(2, 3) {
         override fun migrate(db: SupportSQLiteDatabase) {
             db.execSQL("ALTER TABLE User ADD number TEXT")
@@ -89,20 +78,4 @@ class UserRepository private constructor(context: Context) {
     }
     //This is for get if it is logged in
 
-
-    //One Way to do the session
-//    private val IS_LOGGED_IN = booleanPreferencesKey("isLoggedIn")
-//    private val loggedInFlow: Flow<Boolean> = context.dataStore.data.map { preferences ->
-//        preferences[IS_LOGGED_IN] ?: false
-//    }
-//
-//    suspend fun setLoggedIn(context: Context) {
-//        context.dataStore.edit { settings ->
-//            settings[IS_LOGGED_IN] = true
-//        }
-//    }
-//
-//    suspend fun isLoggedIn(): Flow<Boolean>{
-//        return loggedInFlow
-//    }
 }
