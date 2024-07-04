@@ -1,18 +1,16 @@
 package com.earl.simplecrud
 
-import android.content.Context
 import androidx.room.AutoMigration
 import androidx.room.Database
-import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
+import com.earl.simplecrud.db.NoteDao
 import com.earl.simplecrud.db.UserDao
+import com.earl.simplecrud.models.Note
 import com.earl.simplecrud.models.User
 
 @Database(
-    version = 4,
-    entities = [User::class],
+    version = 5,
+    entities = [User::class, Note::class],
     autoMigrations = [
         AutoMigration (from = 1, to = 2)
     ]
@@ -20,4 +18,5 @@ import com.earl.simplecrud.models.User
 
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
+    abstract fun noteDao(): NoteDao
 }

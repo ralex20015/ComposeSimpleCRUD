@@ -1,6 +1,7 @@
 package com.earl.simplecrud
 
 import android.app.Application
+import com.earl.simplecrud.db.DatabaseProvider
 import com.earl.simplecrud.db.UserRepository
 import com.earl.simplecrud.signinsignup.SessionRepository
 
@@ -12,7 +13,7 @@ class MyApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        UserRepository.initialize(this)
+        DatabaseProvider.initialize(this)
         sessionRepository = SessionRepository
     }
 
