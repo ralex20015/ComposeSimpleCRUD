@@ -15,7 +15,6 @@ fun AdminRoute(
 ) {
     val adminViewModel: AdminViewModel = viewModel(factory = AdminViewModelFactory())
     val users = adminViewModel.getAllUsers().collectAsState(initial = emptyList())
-    val scope = rememberCoroutineScope()
     AdminScreen(
         users = users.value,
         onLogout = onLogoutSubmitted,

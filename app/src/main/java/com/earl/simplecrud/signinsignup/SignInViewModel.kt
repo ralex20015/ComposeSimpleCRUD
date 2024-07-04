@@ -1,6 +1,5 @@
 package com.earl.simplecrud.signinsignup
 
-import android.app.Application
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
@@ -14,6 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
+private const val TAG = "SignInViewModel"
 class SignInViewModel(
     private val userRepository: UserRepository,
     application: MyApplication
@@ -33,9 +33,9 @@ class SignInViewModel(
 
     fun login(email: String, password: String, context: Context) {
         viewModelScope.launch {
-            Log.d("SignInViewModel", "Email: $email, Password: $password")
+            Log.d(TAG, "Email: $email, Password: $password")
             if (email == "admin" && password == "12345") {
-                Log.d("SignInViewModel", "Login successful")
+                Log.d(TAG, "Login successful")
                 val newSessionState = SessionState(
                     isLoggedIn =
                     true, userType = UserType.ADMIN
@@ -45,18 +45,21 @@ class SignInViewModel(
                 _sessionState.value = newSessionState
             } else {
                 //handle if user exists on db
-
+                val user = userRepository.getUserByEmailAndPassword(email, password)
                 try {
-
+                    Log.d(TAG, "Logged in as user: $user")
+                    if (user?.uid != -1){
+                        val newSessionState = SessionState(
+                            isLoggedIn =
+                            true, userType = UserType.USER
+                            , userId = user?.uid ?: -1
+                        )
+                        sessionRepository.saveSessionState(context, newSessionState)
+                        _sessionState.value = newSessionState
+                    }
                 }catch (e: Exception){
-
+                    Log.e("SignInViewModel", "Error al obtener el usuario: ${e.message}")
                 }
-                val newSessionState = SessionState(
-                    isLoggedIn =
-                    true, userType = UserType.USER
-                )
-                sessionRepository.saveSessionState(context, newSessionState)
-                _sessionState.value = newSessionState
             }
         }
     }
