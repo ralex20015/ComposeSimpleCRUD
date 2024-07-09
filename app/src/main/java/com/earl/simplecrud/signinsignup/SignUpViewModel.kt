@@ -2,13 +2,17 @@ package com.earl.simplecrud.signinsignup
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.earl.simplecrud.db.UserRepository
 import com.earl.simplecrud.models.User
+import kotlinx.coroutines.launch
 
 class SignUpViewModel(private val userRepository: UserRepository): ViewModel() {
 
-    suspend fun registerUser(user: User){
-        userRepository.insertAll(user)
+   fun registerUser(user: User){
+        viewModelScope.launch {
+            userRepository.insertAll(user)
+        }
     }
 }
 

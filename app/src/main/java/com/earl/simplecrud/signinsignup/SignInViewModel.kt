@@ -48,11 +48,11 @@ class SignInViewModel(
                 val user = userRepository.getUserByEmailAndPassword(email, password)
                 try {
                     Log.d(TAG, "Logged in as user: $user")
-                    if (user?.uid != -1){
+                    if (user != null){
                         val newSessionState = SessionState(
                             isLoggedIn =
                             true, userType = UserType.USER
-                            , userId = user?.uid ?: -1
+                            , userId = user.uid
                         )
                         sessionRepository.saveSessionState(context, newSessionState)
                         _sessionState.value = newSessionState
